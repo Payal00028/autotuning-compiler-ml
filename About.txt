@@ -1,0 +1,61 @@
+Auto-Tuning Compiler Project - About
+
+This project is our attempt to make compiler optimization selection easier and smarter using Machine Learning.
+In C programming, choosing the right GCC optimization flag (-O0, -O1, -O2, -O3) is not always obvious.
+Many times, people use a flag by guesswork. We wanted to reduce that guesswork with a data-driven approach.
+
+What we have done in this project:
+
+1) Built a C program dataset
+- We collected many C source files and organized them as a dataset.
+- The goal was to capture different coding styles and program structures so the model can learn better.
+
+2) Extracted meaningful code features
+- From each C program, we extracted features such as:
+  lines, characters, number of functions, loops, conditionals, arrays, pointers, structs, globals,
+  function calls, recursion usage, nesting depth, comments, blank lines, memory allocation usage, etc.
+- We also included execution-time related columns (O0_time, O1_time, O2_time, O3_time) in the dataset format.
+
+3) Prepared labeled training data
+- Each sample is associated with the best optimization flag (best_flag).
+- This allows supervised learning, where the model learns the relation between code features and best flag.
+
+4) Trained a machine learning model
+- We trained a Random Forest classifier using scikit-learn.
+- We scaled features with StandardScaler and encoded labels with LabelEncoder.
+- We evaluated performance using accuracy, confusion matrix, and classification report.
+- Trained artifacts are saved as:
+  model.pkl, scaler.pkl, model_meta.pkl
+
+5) Created an interactive Streamlit application
+- We built a full UI in app.py with multiple sections:
+  - EDA Dashboard (dataset preview, missing values, distributions, heatmap, histograms, boxplots)
+  - Model Training (metrics display)
+  - Predict Optimization Flag (manual input form + C file upload prediction)
+  - About Project section
+- If model files are missing, the app can train and save them automatically.
+
+6) Added C file upload prediction (bonus feature)
+- Users can upload a .c file directly.
+- The app extracts code features from the uploaded file and predicts the recommended optimization flag.
+- This makes the project practical for real use.
+
+Project outcome:
+
+We successfully built an end-to-end Auto-Tuning Compiler assistant that:
+- takes code-related features,
+- learns from data,
+- predicts a suitable optimization flag,
+- and presents everything through a simple, user-friendly interface.
+
+In simple words:
+Instead of manually deciding compiler flags every time, this project gives an intelligent recommendation based on how the code is written.
+
+
+
+To Run 
+
+          install dependencies : pip install streamlit pandas scikit-learn matplotlib
+
+          to run app.py 
+          python -m streamlit run app.py
