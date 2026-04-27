@@ -256,29 +256,9 @@ def plot_time_boxplots(df: pd.DataFrame):
     st.pyplot(fig)
 
 
-def prediction_form(feature_columns, scaler, model, label_encoder):
-    st.subheader("Predict Optimization Flag")
-    st.caption("Enter feature values manually and click Predict.")
-
-    user_data = {}
-    for col in feature_columns:
-        if col in ["O0_time", "O1_time", "O2_time", "O3_time"]:
-            user_data[col] = st.number_input(col, min_value=0.0, value=0.0, step=0.0001, format="%.6f")
-        elif col in ["recursion", "malloc_usage", "stdio_usage"]:
-            user_data[col] = st.selectbox(col, options=[0, 1], index=0)
-        else:
-            user_data[col] = st.number_input(col, min_value=0, value=0, step=1)
-
-    if st.button("Predict Flag"):
-        x_input = pd.DataFrame([user_data], columns=feature_columns)
-        x_scaled = scaler.transform(x_input)
-        pred = model.predict(x_scaled)[0]
-        label = label_encoder.inverse_transform([pred])[0]
-        st.success(f"Recommended Optimization Flag: -{label}")
-
-
 def c_upload_prediction(feature_columns, scaler, model, label_encoder):
-    st.subheader("--- Upload C file----")
+    st.subheader("Upload C Program")
+    st.caption("Upload a `.c` file to extract features and predict the recommended optimization flag.")
     uploaded = st.file_uploader("Upload .c file", type=["c"])
     if uploaded is None:
         return
@@ -350,7 +330,7 @@ def main():
 
     section = st.sidebar.radio(
         "Navigate",
-        ["EDA Dashboard", "Model Training", "Predict Optimization Flag", "About Project"],
+        ["EDA Dashboard", "Model Training", "Upload C Program", "About Project"],
     )
 
     if section == "EDA Dashboard":
@@ -397,8 +377,7 @@ def main():
         st.text(report)
         st.caption(f"Saved: {MODEL_FILE}, {SCALER_FILE}, {META_FILE}")
 
-    elif section == "Predict Optimization Flag":
-        prediction_form(feature_columns, scaler, model, label_encoder)
+    elif section == "Upload C Program":
         c_upload_prediction(feature_columns, scaler, model, label_encoder)
 
     elif section == "About Project":
